@@ -68,12 +68,12 @@ public class TileMap {
 
     }
 
-    public void setRainLevel(int x, int y, double height) {
+    public void setRainLevel(int x, int y, double rainLevel) {
         int index = getIndex(x, y);
         if (index < 0 || index > width * height) {
             return;
         }
-        rainMap[index] = height;
+        rainMap[index] = rainLevel;
     }
 
     private int getIndex(int x, int y) {
