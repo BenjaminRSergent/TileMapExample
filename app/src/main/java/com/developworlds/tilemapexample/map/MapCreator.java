@@ -11,7 +11,7 @@ public class MapCreator {
     private Joise rain;
 
     // Decent default values
-    private double detailWeight = 0.0;
+    private double detailWeight = 0.25;
     private double baseZoomLevel = 800.0;
     private double detailZoomDivisor = 2.0;
     private double rainZoomDivisor = 8.0;
@@ -28,8 +28,8 @@ public class MapCreator {
         "zoom into" the smooth area between the white noise..
         */
         createBasicTerrain(map, startX, startY, width, height);
-        //addDetail(map, startX, startY, width, height);
-        //addRain(map, startX, startY, width, height);
+        addDetail(map, startX, startY, width, height);
+        addRain(map, startX, startY, width, height);
     }
 
     private void createBasicTerrain(TileMap map, int startX, int startY, int width, int height) {
