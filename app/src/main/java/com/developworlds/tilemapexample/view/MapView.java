@@ -1,4 +1,4 @@
-package com.developworlds.planetsexample.view;
+package com.developworlds.tilemapexample.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,9 +10,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.developworlds.planetsexample.R;
-import com.developworlds.planetsexample.map.TileMap;
-import com.developworlds.planetsexample.map.TileType;
+import com.developworlds.tilemapexample.R;
+import com.developworlds.tilemapexample.map.TileMap;
+import com.developworlds.tilemapexample.map.TileType;
 
 public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = SurfaceView.class.getSimpleName();

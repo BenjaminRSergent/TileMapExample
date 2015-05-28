@@ -1,4 +1,4 @@
-package com.developworlds.planetsexample;
+package com.developworlds.tilemapexample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

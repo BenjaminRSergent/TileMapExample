@@ -1,13 +1,13 @@
-package com.developworlds.planetsexample.activity;
+package com.developworlds.tilemapexample.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.developworlds.planetsexample.R;
-import com.developworlds.planetsexample.map.MapCreator;
-import com.developworlds.planetsexample.map.TileMap;
-import com.developworlds.planetsexample.view.MapView;
+import com.developworlds.tilemapexample.R;
+import com.developworlds.tilemapexample.map.MapCreator;
+import com.developworlds.tilemapexample.map.TileMap;
+import com.developworlds.tilemapexample.view.MapView;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +35,8 @@ public class MainActivity extends Activity {
 
     public Runnable createMap = new Runnable() {
         public void run() {
-            MapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
+            MapCreator mapCreator = new MapCreator();
+            mapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
         }
     };
 

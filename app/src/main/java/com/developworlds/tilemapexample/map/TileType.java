@@ -1,4 +1,4 @@
-package com.developworlds.planetsexample.map;
+package com.developworlds.tilemapexample.map;
 
 public enum TileType {
     Error,

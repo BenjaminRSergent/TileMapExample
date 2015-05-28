@@ -1,12 +1,12 @@
-package com.developworlds.planetsexample.view;
+package com.developworlds.tilemapexample.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.developworlds.planetsexample.R;
-import com.developworlds.planetsexample.map.TileMap;
-import com.developworlds.planetsexample.map.TileType;
+import com.developworlds.tilemapexample.R;
+import com.developworlds.tilemapexample.map.TileMap;
+import com.developworlds.tilemapexample.map.TileType;
 
 public class WaterTileHelper {
     private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);

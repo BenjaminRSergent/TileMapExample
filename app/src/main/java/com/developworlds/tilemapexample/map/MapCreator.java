@@ -1,0 +1,111 @@
+package com.developworlds.tilemapexample.map;
+
+import com.sudoplay.joise.Joise;
+import com.sudoplay.joise.module.ModuleAutoCorrect;
+import com.sudoplay.joise.module.ModuleBasisFunction;
+import com.sudoplay.joise.module.ModuleFractal;
+
+public class MapCreator {
+    private Joise base;
+    private Joise detail;
+    private Joise rain;
+
+    // Decent default values
+    private double detailWeight = 0.25;
+    private double baseZoomLevel = 200.0;
+    private double detailZoomLevel = baseZoomLevel / 4.0;
+    private double rainZoomLevel = baseZoomLevel / 2.0;
+
+    public void generateTileMap(TileMap map, int startX, int startY, int width, int height) {
+        createNoiseGenerators();
+
+        createBasicTerrain(map, startX, startY, width, height);
+        addDetail(map, startX, startY, width, height);
+        addRain(map, startX, startY, width, height);
+    }
+
+    private void createBasicTerrain(TileMap map, int startX, int startY, int width, int height) {
+        for (int x = startX; x < startX + width; x++) {
+            for (int y = startY; y < startY + height; y++) {
+                double tileHeight = base.get(x / baseZoomLevel, y / baseZoomLevel);
+                map.setTileHeight(x - startX, y - startY, tileHeight);
+            }
+        }
+    }
+
+    private void addDetail(TileMap map, int startX, int startY, int width, int height) {
+        for (int x = startX; x < startX + width; x++) {
+            for (int y = startY; y < startY + height; y++) {
+                double tileHeight = detail.get(x / detailZoomLevel, y / detailZoomLevel);
+                double currHeight = map.getTileHeightAt(x - startX, y - startY);
+                map.setTileHeight(x - startX, y - startY, currHeight + tileHeight);
+            }
+        }
+    }
+
+    private void addRain(TileMap map, int startX, int startY, int width, int height) {
+        for (int x = startX; x < startX + width; x++) {
+            for (int y = startY; y < startY + height; y++) {
+                double rainLevel = rain.get(x / rainZoomLevel, y / rainZoomLevel);
+                map.setRainLevel(x - startX, y - startY, rainLevel);
+            }
+        }
+    }
+
+    public void createNoiseGenerators() {
+        base = createSimplexGenerator(6, 2, detailWeight, 1 - detailWeight);
+        detail = createSimplexGenerator(8, 2, -detailWeight, detailWeight);
+        rain = createSimplexGenerator(6, 2, 0, 1);
+    }
+
+    private Joise createSimplexGenerator(int octaves, int frequency, double min, double max) {
+        long seed = (long) (Math.random() * Long.MAX_VALUE);
+
+        ModuleFractal gen = new ModuleFractal();
+        gen.setAllSourceBasisTypes(ModuleBasisFunction.BasisType.SIMPLEX);
+        gen.setNumOctaves(octaves);
+        gen.setFrequency(frequency);
+        gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
+        gen.setSeed(seed);
+
+        ModuleAutoCorrect correct = new ModuleAutoCorrect();
+        correct.setSource(gen);
+        correct.setRange(min, max);
+        correct.setSamples(100);
+        correct.calculate();
+        return new Joise(correct);
+    }
+
+
+    public double getDetailWeight() {
+        return detailWeight;
+    }
+
+    public void setDetailWeight(double detailWeight) {
+        this.detailWeight = detailWeight;
+    }
+
+    public double getBaseZoomLevel() {
+        return baseZoomLevel;
+    }
+
+    public void setBaseZoomLevel(double baseZoomLevel) {
+        this.baseZoomLevel = baseZoomLevel;
+    }
+
+    public double getDetailZoomLevel() {
+        return detailZoomLevel;
+    }
+
+    public void setDetailZoomLevel(double detailZoomLevel) {
+        this.detailZoomLevel = detailZoomLevel;
+    }
+
+    public double getRainZoomLevel() {
+        return rainZoomLevel;
+    }
+
+    public void setRainZoomLevel(double rainZoomLevel) {
+        this.rainZoomLevel = rainZoomLevel;
+    }
+}

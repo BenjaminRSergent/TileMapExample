@@ -1,10 +1,16 @@
-package com.developworlds.planetsexample.map;
+package com.developworlds.tilemapexample.map;
 
 public class TileMap {
     private final int width;
     private final int height;
+
     private double[] heightMap;
     private double[] rainMap;
+
+    // Decent default values
+    private double waterLevel = 0.35;
+    private double grassLevel = 0.70;
+    private double mountainLevel = 0.8;
 
     public TileMap(int width, int height) {
         this.width = width;
@@ -30,12 +36,12 @@ public class TileMap {
         return type;
     }
 
-    private static TileType getTileType(double tileHeight) {
-        if (tileHeight < 0.4) {
+    private TileType getTileType(double tileHeight) {
+        if (tileHeight < waterLevel) {
             return TileType.Water;
-        } else if (tileHeight < 0.75) {
+        } else if (tileHeight < grassLevel) {
             return TileType.Grass;
-        } else if (tileHeight < 0.9) {
+        } else if (tileHeight < mountainLevel) {
             return TileType.LowMountain;
         } else {
             return TileType.TallMoutain;
@@ -78,5 +84,29 @@ public class TileMap {
 
     public int getMapHeight() {
         return height;
+    }
+
+    public double getWaterLevel() {
+        return waterLevel;
+    }
+
+    public void setWaterLevel(double waterLevel) {
+        this.waterLevel = waterLevel;
+    }
+
+    public double getGrassLevel() {
+        return grassLevel;
+    }
+
+    public void setGrassLevel(double grassLevel) {
+        this.grassLevel = grassLevel;
+    }
+
+    public double getMountainLevel() {
+        return mountainLevel;
+    }
+
+    public void setMountainLevel(double mountainLevel) {
+        this.mountainLevel = mountainLevel;
     }
 }
