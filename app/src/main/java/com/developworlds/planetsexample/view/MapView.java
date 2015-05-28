@@ -4,31 +4,32 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.developworlds.planetsexample.R;
-import com.developworlds.planetsexample.activity.MainActivity;
 import com.developworlds.planetsexample.map.TileMap;
 import com.developworlds.planetsexample.map.TileType;
 
 public class MapView extends SurfaceView implements SurfaceHolder.Callback {
-    private static final long SIXTY_FPS_MS = 16;
     private static final String TAG = SurfaceView.class.getSimpleName();
-    private float yPos;
-    private float xPos;
-    private boolean isRunning = true;
+    private static final long SIXTY_FPS_MS = 1000 / 60;
+    private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    private  static final int TILE_SIZE = 128;
+    private final int TALL_MOUNTAIN_OFFSET = -40;
+
+    private boolean isDrawThreadRunning = true;
+    private PointF tilePosition = new PointF(0, 0);
     private TileMap map;
+
     private Bitmap grass;
     private Bitmap forest;
     private Bitmap lowMountian;
-    private Bitmap highMountian;
-
-    private Canvas canvas;
+    private Bitmap tallMountian;
     private WaterTileHelper waterTileHelper;
-    public static Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 
     public MapView(Context context) {
         super(context);
@@ -45,25 +46,41 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         init();
     }
 
-
     private void init() {
         waterTileHelper = new WaterTileHelper(getContext());
         grass = BitmapFactory.decodeResource(getResources(), R.drawable.aw_grass);
         lowMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountian);
-        highMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountiantall);
+        tallMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountiantall);
         forest = BitmapFactory.decodeResource(getResources(), R.drawable.aw_forest);
 
         getHolder().addCallback(this);
     }
 
 
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(TAG, "Surface Created");
+        isDrawThreadRunning = true;
+        startDrawThread();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        isDrawThreadRunning = false;
+    }
+
     private void startDrawThread() {
         Log.d(TAG, "Starting draw thread");
         new Thread() {
             public void run() {
-                while (isRunning) {
+                while (isDrawThreadRunning) {
                     try {
-                        canvas = null;
+                        Canvas canvas = null;
 
                         try {
                             synchronized (getHolder()) {
@@ -105,25 +122,23 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
             return;
         }
 
-        final int TALL_MARGIN = -40;
+        int xSubTileOffset = (int) -((tilePosition.x - (int) tilePosition.x) * TILE_SIZE);
+        int ySubTileOffset = (int) -((tilePosition.y - (int) tilePosition.y) * TILE_SIZE);
 
-        int xSubTileOffset = (int) -((xPos - (int) xPos) * MainActivity.TILE_SIZE);
-        int ySubTileOffset = (int) -((yPos - (int) yPos) * MainActivity.TILE_SIZE);
+        for (int x = (int) tilePosition.x - 2; x < tilePosition.x + canvas.getWidth() / TILE_SIZE + 2; x++) {
+            for (int y = (int) tilePosition.y - 2; y < tilePosition.y + canvas.getHeight() / TILE_SIZE + 2; y++) {
+                int screenX = xSubTileOffset + (int) (x - tilePosition.x) * TILE_SIZE;
+                int screenY = ySubTileOffset + (int) (y - tilePosition.y) * TILE_SIZE;
 
-        for (int x = (int) xPos - 2; x < xPos + canvas.getWidth() / MainActivity.TILE_SIZE + 2; x++) {
-            for (int y = (int) yPos - 2; y < yPos + canvas.getHeight() / MainActivity.TILE_SIZE + 2; y++) {
                 TileType type = map.getTile(x, y);
-                int yMargin = 0;
-                if (type == TileType.HighMoutian) {
-                    yMargin = TALL_MARGIN;
+                if (type == TileType.TallMoutain) {
+                    screenY += TALL_MOUNTAIN_OFFSET;
                 }
-
-                int screenX = xSubTileOffset + (int) (x - xPos) * MainActivity.TILE_SIZE;
-                int screenY = ySubTileOffset + (int) (y - yPos) * MainActivity.TILE_SIZE + yMargin;
 
                 Bitmap bitmap = null;
                 if (type == TileType.Water) {
-                    bitmap = waterTileHelper.getWaterTile(map, x, y);;
+                    bitmap = waterTileHelper.getWaterTile(map, x, y);
+                    ;
                 } else {
                     bitmap = getTile(type);
                 }
@@ -136,15 +151,12 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Bitmap getTile(TileType tile) {
         switch (tile) {
-
-            case Error:
-                return blankBitmap;
             case Grass:
                 return grass;
-            case LowMountian:
+            case LowMountain:
                 return lowMountian;
-            case HighMoutian:
-                return highMountian;
+            case TallMoutain:
+                return tallMountian;
             case Forest:
                 return forest;
             default:
@@ -155,33 +167,15 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
 
     public void move(float x, float y) {
         synchronized (getHolder()) {
-            xPos += x;
-            yPos += y;
+            tilePosition.x += x;
+            tilePosition.y += y;
 
-            xPos = Math.min(map.getWidth() - (getWidth() / MainActivity.TILE_SIZE), xPos);
-            xPos = Math.max(0, xPos);
+            tilePosition.x = Math.min(map.getWidth() - (getWidth() / TILE_SIZE), tilePosition.x);
+            tilePosition.x = Math.max(0, tilePosition.x);
 
-            yPos = Math.min(map.getHeight() - (getHeight() / MainActivity.TILE_SIZE), yPos);
-            yPos = Math.max(0, yPos);
+            tilePosition.y = Math.min(map.getHeight() - (getHeight() / TILE_SIZE), tilePosition.y);
+            tilePosition.y = Math.max(0, tilePosition.y);
         }
-
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(TAG, "Surface Created");
-        isRunning = true;
-        startDrawThread();
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        isRunning = false;
     }
 
     public void setMap(TileMap map) {

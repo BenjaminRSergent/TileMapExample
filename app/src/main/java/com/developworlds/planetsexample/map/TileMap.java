@@ -1,8 +1,5 @@
 package com.developworlds.planetsexample.map;
 
-/**
- * Created by benjamin-sergent on 5/22/15.
- */
 public class TileMap {
     private final int width;
     private final int height;
@@ -34,7 +31,7 @@ public class TileMap {
         int index = getIndex(x, y);
         TileType type = getTileType(heightMap[index]);
 
-        if(type == TileType.Grass && rainMap[index] > 0.8f) {
+        if (type == TileType.Grass && rainMap[index] > 0.7f) {
             return TileType.Forest;
         }
 
@@ -47,9 +44,9 @@ public class TileMap {
         } else if (tileHeight < 0.75) {
             return TileType.Grass;
         } else if (tileHeight < 0.8) {
-            return TileType.LowMountian;
+            return TileType.LowMountain;
         } else {
-            return TileType.HighMoutian;
+            return TileType.TallMoutain;
         }
     }
 

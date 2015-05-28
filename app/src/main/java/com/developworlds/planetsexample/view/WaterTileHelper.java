@@ -9,6 +9,8 @@ import com.developworlds.planetsexample.map.TileMap;
 import com.developworlds.planetsexample.map.TileType;
 
 public class WaterTileHelper {
+    private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+
     private static final int LEFT = 1 << 0;
     private static final int RIGHT = 1 << 1;
     private static final int TOP = 1 << 2;
@@ -73,7 +75,7 @@ public class WaterTileHelper {
 
     public Bitmap getWaterTile(TileMap map, int x, int y) {
         if (map.getTile(x, y) != TileType.Water) {
-            return MapView.blankBitmap; // Not water
+            return blankBitmap; // Not water
         }
 
         boolean leftIsWater = isWater(map.getTile(x - 1, y));

@@ -5,6 +5,6 @@ public enum TileType {
         Water,
         Grass,
         Forest,
-        LowMountian,
-        HighMoutian
+        LowMountain,
+        TallMoutain
     }

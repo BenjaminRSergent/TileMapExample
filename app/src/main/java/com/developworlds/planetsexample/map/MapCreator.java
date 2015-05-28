@@ -5,9 +5,6 @@ import com.sudoplay.joise.module.ModuleAutoCorrect;
 import com.sudoplay.joise.module.ModuleBasisFunction;
 import com.sudoplay.joise.module.ModuleFractal;
 
-/**
- * Created by benjamin-sergent on 5/22/15.
- */
 public class MapCreator {
     private static final Joise base;
     private static final Joise detail;
@@ -41,7 +38,6 @@ public class MapCreator {
         correct.setRange(-0.25, 0.25);
         correct.setSamples(100);
         correct.calculate();
-
         detail = new Joise(correct);
 
         gen = new ModuleFractal();
@@ -55,7 +51,6 @@ public class MapCreator {
         correct.setRange(0, 1);
         correct.setSamples(100);
         correct.calculate();
-
         rain = new Joise(correct);
     }
 
@@ -80,8 +75,7 @@ public class MapCreator {
         // Add Trees
         for (int x = startX; x < startX + width; x++) {
             for (int y = startY; y < startY + height; y++) {
-                // Offset so it doesn't match terrain
-                double rainLevel = rain.get(x / 300.0, y / 300.0);
+                double rainLevel = rain.get(x / 100.0, y / 100.0);
                 chunk.setRainLevel(x - startX, y - startY, rainLevel);
             }
         }
