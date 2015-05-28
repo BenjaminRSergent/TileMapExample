@@ -82,7 +82,7 @@ public class WaterTileHelper {
         boolean bottomIsWater = isWater(map.getTile(x, y + 1));
 
         int waterCode = getWaterCode(leftIsWater, topIsWater, rightIsWater, bottomIsWater);
-        if (waterCode == (ORTHO_SUM - 1)) {
+        if (waterCode == (ORTHO_SUM)) {
             // We either have a tip or a center piece
             return getTipPiece(map, x, y);
         }
@@ -105,7 +105,7 @@ public class WaterTileHelper {
         } else if (!isWater(map.getTile(x - 1, y + 1))) {
             return tipTiles[LOWER_LEFT];
         } else {
-            return waterTiles[ORTHO_SUM - 1];
+            return waterTiles[ORTHO_SUM];
         }
     }
 }
