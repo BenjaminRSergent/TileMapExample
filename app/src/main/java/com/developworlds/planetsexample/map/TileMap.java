@@ -7,20 +7,22 @@ public class TileMap {
     private final int width;
     private final int height;
     private double[] heightMap;
+    private double[] rainMap;
 
     public TileMap(int width, int height) {
         this.width = width;
         this.height = height;
 
         heightMap = new double[width * height];
-
-        for (int index = 0; index < heightMap.length; index++) {
-            heightMap[index] = 0;
-        }
+        rainMap = new double[width * height];
     }
 
     public void setTileHeight(int x, int y, double height) {
         heightMap[getIndex(x, y)] = height;
+    }
+
+    public void setRainLevel(int x, int y, double height) {
+        rainMap[getIndex(x, y)] = height;
     }
 
     public TileType getTile(int x, int y) {
@@ -29,9 +31,12 @@ public class TileMap {
             return TileType.Error;
         }
 
-        TileType type = getTileType(heightMap[getIndex(x, y)]);
+        int index = getIndex(x, y);
+        TileType type = getTileType(heightMap[index]);
 
-        //TODO: Forests
+        if(type == TileType.Grass && rainMap[index] > 0.8f) {
+            return TileType.Forest;
+        }
 
         return type;
     }

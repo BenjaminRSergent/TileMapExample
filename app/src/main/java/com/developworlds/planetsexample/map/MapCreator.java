@@ -9,8 +9,9 @@ import com.sudoplay.joise.module.ModuleFractal;
  * Created by benjamin-sergent on 5/22/15.
  */
 public class MapCreator {
-    private static final Joise joise;
-    private static final Joise joiseHigh;
+    private static final Joise base;
+    private static final Joise detail;
+    private static final Joise rain;
 
     static {
         ModuleFractal gen = new ModuleFractal();
@@ -18,49 +19,70 @@ public class MapCreator {
         gen.setNumOctaves(8);
         gen.setFrequency(2);
         gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
-        gen.setSeed(27);
+        gen.setSeed(1);
 
-        ModuleFractal gen2 = new ModuleFractal();
-        gen2.setNumOctaves(8);
-        gen2.setFrequency(2);
-        gen2.setType(ModuleFractal.FractalType.RIDGEMULTI);
-        gen2.setSeed(100);
+        ModuleAutoCorrect correct = new ModuleAutoCorrect();
+        correct.setSource(gen);
+        correct.setRange(0.25, 0.75);
+        correct.setSamples(100);
+        correct.calculate();
+        base = new Joise(correct);
 
-        ModuleAutoCorrect correct1 = new ModuleAutoCorrect();
-        correct1.setSource(gen);
-        correct1.setRange(0.25, 0.75);
-        correct1.setSamples(10);
-        correct1.calculate();
+        gen = new ModuleFractal();
+        gen.setNumOctaves(8);
+        gen.setFrequency(2);
+        gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
+        gen.setSeed(2);
 
-        ModuleAutoCorrect correct2 = new ModuleAutoCorrect();
-        correct2.setSource(gen2);
-        correct2.setRange(-0.25, 0.25);
-        correct2.setSamples(10);
-        correct2.calculate();
+        correct = new ModuleAutoCorrect();
+        correct.setSource(gen);
+        correct.setRange(-0.25, 0.25);
+        correct.setSamples(100);
+        correct.calculate();
 
+        detail = new Joise(correct);
 
-        joise = new Joise(correct1);
-        joiseHigh = new Joise(correct2);
+        gen = new ModuleFractal();
+        gen.setNumOctaves(8);
+        gen.setFrequency(2);
+        gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
+        gen.setSeed(3);
+
+        correct = new ModuleAutoCorrect();
+        correct.setSource(gen);
+        correct.setRange(0, 1);
+        correct.setSamples(100);
+        correct.calculate();
+
+        rain = new Joise(correct);
     }
 
-    // Two loops allow us to watch the effect of a second high frequency pass
-    // and makes to map visible quicker
     public static void generateTileMap(TileMap chunk, int startX, int startY, int width, int height) {
+        // Make basic structure
         for (int x = startX; x < startX + width; x++) {
             for (int y = startY; y < startY + height; y++) {
-                double tileHeight = joise.get(x / 200.0, y / 200.0);
+                double tileHeight = base.get(x / 200.0, y / 200.0);
                 chunk.setTileHeight(x - startX, y - startY, tileHeight);
             }
         }
 
+        // Increase complexity
         for (int x = startX; x < startX + width; x++) {
             for (int y = startY; y < startY + height; y++) {
-                double tileHeight = joiseHigh.get(x / 40.0, y / 40.0);
+                double tileHeight = detail.get(x / 40.0, y / 40.0);
                 double currHeight = chunk.getTileHeight(x - startX, y - startY);
                 chunk.setTileHeight(x - startX, y - startY, currHeight + tileHeight);
             }
         }
-    }
 
+        // Add Trees
+        for (int x = startX; x < startX + width; x++) {
+            for (int y = startY; y < startY + height; y++) {
+                // Offset so it doesn't match terrain
+                double rainLevel = rain.get(x / 300.0, y / 300.0);
+                chunk.setRainLevel(x - startX, y - startY, rainLevel);
+            }
+        }
+    }
 
 }

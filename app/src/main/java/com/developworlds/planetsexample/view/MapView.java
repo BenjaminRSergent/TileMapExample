@@ -22,6 +22,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     private boolean isRunning = true;
     private TileMap map;
     private Bitmap grass;
+    private Bitmap forest;
     private Bitmap lowMountian;
     private Bitmap highMountian;
 
@@ -50,6 +51,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         grass = BitmapFactory.decodeResource(getResources(), R.drawable.aw_grass);
         lowMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountian);
         highMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountiantall);
+        forest = BitmapFactory.decodeResource(getResources(), R.drawable.aw_forest);
 
         getHolder().addCallback(this);
     }
@@ -59,8 +61,6 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d(TAG, "Starting draw thread");
         new Thread() {
             public void run() {
-
-
                 while (isRunning) {
                     try {
                         canvas = null;
@@ -145,6 +145,8 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
                 return lowMountian;
             case HighMoutian:
                 return highMountian;
+            case Forest:
+                return forest;
             default:
                 return blankBitmap;
         }
