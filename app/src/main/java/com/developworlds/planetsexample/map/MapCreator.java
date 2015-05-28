@@ -14,12 +14,14 @@ public class MapCreator {
     private static final Joise rain;
 
     static {
+        long baseSeed = (long)(Math.random() * Long.MAX_VALUE);
+
         ModuleFractal gen = new ModuleFractal();
         gen.setAllSourceBasisTypes(ModuleBasisFunction.BasisType.SIMPLEX);
         gen.setNumOctaves(8);
         gen.setFrequency(2);
         gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
-        gen.setSeed(1);
+        gen.setSeed(baseSeed);
 
         ModuleAutoCorrect correct = new ModuleAutoCorrect();
         correct.setSource(gen);
@@ -32,7 +34,7 @@ public class MapCreator {
         gen.setNumOctaves(8);
         gen.setFrequency(2);
         gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
-        gen.setSeed(2);
+        gen.setSeed(baseSeed * 2);
 
         correct = new ModuleAutoCorrect();
         correct.setSource(gen);
@@ -46,7 +48,7 @@ public class MapCreator {
         gen.setNumOctaves(8);
         gen.setFrequency(2);
         gen.setType(ModuleFractal.FractalType.RIDGEMULTI);
-        gen.setSeed(3);
+        gen.setSeed(baseSeed * 3);
 
         correct = new ModuleAutoCorrect();
         correct.setSource(gen);
