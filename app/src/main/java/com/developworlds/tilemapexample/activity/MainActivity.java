@@ -3,6 +3,7 @@ package com.developworlds.tilemapexample.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.developworlds.tilemapexample.R;
@@ -21,6 +22,7 @@ public class MainActivity extends Activity {
     private TileMap map;
     private MapView mapView;
     private ExecutorService executor = Executors.newFixedThreadPool(1);
+    private boolean generating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +43,10 @@ public class MainActivity extends Activity {
 
     private final Runnable createMap = new Runnable() {
         public void run() {
+            generating = true;
             MapCreator mapCreator = new MapCreator();
             mapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
+            generating = false;
         }
     };
 
@@ -64,5 +68,11 @@ public class MainActivity extends Activity {
         }
 
         return false;
+    }
+
+    public void regen(View view) {
+        if(!generating) {
+            executor.execute(createMap);
+        }
     }
 }
