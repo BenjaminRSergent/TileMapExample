@@ -3,6 +3,7 @@ package com.developworlds.tilemapexample.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 
 import com.developworlds.tilemapexample.R;
 import com.developworlds.tilemapexample.map.MapCreator;
@@ -25,6 +26,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
         if (map == null) {
             map = new TileMap(MAP_SIZE, MAP_SIZE);

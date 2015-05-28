@@ -11,7 +11,7 @@ public class MapCreator {
     private Joise rain;
 
     // Decent default values
-    private double detailWeight = 0.25;
+    private double detailWeight = 0.0;
     private double baseZoomLevel = 800.0;
     private double detailZoomDivisor = 2.0;
     private double rainZoomDivisor = 8.0;
@@ -28,8 +28,8 @@ public class MapCreator {
         "zoom into" the smooth area between the white noise..
         */
         createBasicTerrain(map, startX, startY, width, height);
-        addDetail(map, startX, startY, width, height);
-        addRain(map, startX, startY, width, height);
+        //addDetail(map, startX, startY, width, height);
+        //addRain(map, startX, startY, width, height);
     }
 
     private void createBasicTerrain(TileMap map, int startX, int startY, int width, int height) {
@@ -76,7 +76,7 @@ public class MapCreator {
         rain = createSimplexGenerator(4, 2, 0, 1);
     }
 
-    private Joise createSimplexGenerator(int octaves, int frequency, double min, double max) {
+    private Joise createSimplexGenerator(int octaves, double frequency, double min, double max) {
         long seed = (long) (Math.random() * Long.MAX_VALUE);
 
         ModuleFractal gen = new ModuleFractal();
