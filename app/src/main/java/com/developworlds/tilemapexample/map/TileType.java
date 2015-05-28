@@ -6,5 +6,5 @@ public enum TileType {
     Grass,
     Forest,
     LowMountain,
-    TallMoutain
+    TallMountain
 }

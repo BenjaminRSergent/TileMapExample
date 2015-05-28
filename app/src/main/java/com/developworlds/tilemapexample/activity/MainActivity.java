@@ -16,9 +16,10 @@ import java.util.concurrent.Executors;
 public class MainActivity extends Activity {
     private static final float TOUCH_MOVEMENT_SCALE = 50.0f;
     private static int MAP_SIZE = 250;
+
     private TileMap map;
     private MapView mapView;
-    ExecutorService executor = Executors.newFixedThreadPool(1);
+    private ExecutorService executor = Executors.newFixedThreadPool(1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,7 @@ public class MainActivity extends Activity {
         executor.execute(createMap);
     }
 
-    public Runnable createMap = new Runnable() {
+    private final Runnable createMap = new Runnable() {
         public void run() {
             MapCreator mapCreator = new MapCreator();
             mapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
@@ -44,11 +45,14 @@ public class MainActivity extends Activity {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if (event.getHistorySize() == 0) {
+                // Can't calculate movement amounts.
                 return false;
             }
             float x = event.getX() - event.getHistoricalX(0);
             float y = event.getY() - event.getHistoricalY(0);
 
+            // Move one tile for every TOUCH_MOVEMENT_SCALE pixels that the touch moves
+            // on the screen.
             mapView.move(-x / TOUCH_MOVEMENT_SCALE, -y / TOUCH_MOVEMENT_SCALE);
 
             return true;

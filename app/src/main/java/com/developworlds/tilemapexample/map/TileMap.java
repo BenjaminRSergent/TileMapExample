@@ -4,8 +4,10 @@ public class TileMap {
     private final int width;
     private final int height;
 
-    private double[] heightMap;
-    private double[] rainMap;
+    // One dimensional arrays are generally better for the cache. Enough to provide a small
+    // boost despite having to calculate the index from (x, y) pairs in this use case.
+    private final double[] heightMap;
+    private final double[] rainMap;
 
     // Decent default values
     private double waterLevel = 0.35;
@@ -44,7 +46,7 @@ public class TileMap {
         } else if (tileHeight < mountainLevel) {
             return TileType.LowMountain;
         } else {
-            return TileType.TallMoutain;
+            return TileType.TallMountain;
         }
     }
 

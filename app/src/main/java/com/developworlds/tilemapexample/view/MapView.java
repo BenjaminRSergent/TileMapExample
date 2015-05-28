@@ -19,16 +19,16 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     private static final long SIXTY_FPS_MS = 1000 / 60;
     private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
     private static final int TILE_SIZE = 128;
-    private final int TALL_MOUNTAIN_OFFSET = -40;
+    private static final int TALL_MOUNTAIN_OFFSET = -40;
 
     private boolean isDrawThreadRunning = true;
-    private PointF tilePosition = new PointF(0, 0);
+    private final PointF tilePosition = new PointF(0, 0);
     private TileMap map;
 
     private Bitmap grass;
     private Bitmap forest;
-    private Bitmap lowMountian;
-    private Bitmap tallMountian;
+    private Bitmap lowMountain;
+    private Bitmap tallMountain;
     private WaterTileHelper waterTileHelper;
 
     public MapView(Context context) {
@@ -49,8 +49,8 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     private void init() {
         waterTileHelper = new WaterTileHelper(getContext());
         grass = BitmapFactory.decodeResource(getResources(), R.drawable.aw_grass);
-        lowMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountian);
-        tallMountian = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountiantall);
+        lowMountain = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountian);
+        tallMountain = BitmapFactory.decodeResource(getResources(), R.drawable.aw_mountiantall);
         forest = BitmapFactory.decodeResource(getResources(), R.drawable.aw_forest);
 
         getHolder().addCallback(this);
@@ -110,14 +110,14 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
         }.start();
     }
 
-    public void doDraw(Canvas canvas) {
+    private void doDraw(Canvas canvas) {
         super.draw(canvas);
 
         canvas.drawARGB(255, 0, 0, 0);
         drawMap(canvas);
     }
 
-    public void drawMap(Canvas canvas) {
+    private void drawMap(Canvas canvas) {
         if (map == null) {
             return;
         }
@@ -131,14 +131,13 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
                 int screenY = ySubTileOffset + (int) (y - tilePosition.y) * TILE_SIZE;
 
                 TileType type = map.getTile(x, y);
-                if (type == TileType.TallMoutain) {
+                if (type == TileType.TallMountain) {
                     screenY += TALL_MOUNTAIN_OFFSET;
                 }
 
-                Bitmap bitmap = null;
+                Bitmap bitmap;
                 if (type == TileType.Water) {
                     bitmap = waterTileHelper.getWaterTile(map, x, y);
-                    ;
                 } else {
                     bitmap = getTile(type);
                 }
@@ -154,9 +153,9 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
             case Grass:
                 return grass;
             case LowMountain:
-                return lowMountian;
-            case TallMoutain:
-                return tallMountian;
+                return lowMountain;
+            case TallMountain:
+                return tallMountain;
             case Forest:
                 return forest;
             default:

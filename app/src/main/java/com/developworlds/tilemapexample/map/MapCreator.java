@@ -19,6 +19,14 @@ public class MapCreator {
     public void generateTileMap(TileMap map, int startX, int startY, int width, int height) {
         createNoiseGenerators();
 
+        /*
+        For each of these layers, the x and y values are divided by positive integers which
+        can be though of as zoom levels.
+
+        Simplex produces white noise if you only poll it at integer values. The smoothness
+        occurs between the integers. Thus, the larger your divisor, the higher you noise will
+        "zoom into" the smooth area between the white noise..
+        */
         createBasicTerrain(map, startX, startY, width, height);
         addDetail(map, startX, startY, width, height);
         addRain(map, startX, startY, width, height);
@@ -52,10 +60,18 @@ public class MapCreator {
         }
     }
 
-    public void createNoiseGenerators() {
+    private void createNoiseGenerators() {
+        // The base will be used to create the outline of the terrain. It will be used
+        // at a higher zoom level then the detail and requires fewer octaves to work well.
         base = createSimplexGenerator(6, 2, detailWeight, 1 - detailWeight);
+
+        // The detail makes the basic terrain more varied with a high zoom level, but low
+        // weight.
         detail = createSimplexGenerator(8, 2, -detailWeight, detailWeight);
-        rain = createSimplexGenerator(6, 2, 0, 1);
+
+        // The rain noise generator doesn't need special settings. These parameters
+        // are the most common to use with simplex noise.
+        rain = createSimplexGenerator(8, 2, 0, 1);
     }
 
     private Joise createSimplexGenerator(int octaves, int frequency, double min, double max) {
