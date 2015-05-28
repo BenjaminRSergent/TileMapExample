@@ -22,7 +22,7 @@ public class WaterTileHelper {
     private static int UPPER_RIGHT = 1;
     private static int LOWER_LEFT = 2;
     private static int LOWER_RIGHT = 3;
-    private Bitmap[] tipTiles = new Bitmap[4];
+    private Bitmap[] cornerTiles = new Bitmap[4];
 
 
     public WaterTileHelper(Context context) {
@@ -48,10 +48,43 @@ public class WaterTileHelper {
         waterTiles[getWaterCode(false, false, false, true)] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_upperchannelend);
         waterTiles[getWaterCode(false, false, false, false)] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterisland);
 
-        tipTiles[UPPER_LEFT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterupperlefttip);
-        tipTiles[UPPER_RIGHT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterupperrighttip);
-        tipTiles[LOWER_LEFT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterlowerlefttip);
-        tipTiles[LOWER_RIGHT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterlowerrighttip);
+        cornerTiles[UPPER_LEFT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterupperlefttip);
+        cornerTiles[UPPER_RIGHT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterupperrighttip);
+        cornerTiles[LOWER_LEFT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterlowerlefttip);
+        cornerTiles[LOWER_RIGHT] = BitmapFactory.decodeResource(context.getResources(), R.drawable.aw_waterlowerrighttip);
+    }
+
+    public Bitmap getWaterTile(TileMap map, int x, int y) {
+        if (map.getTile(x, y) != TileType.Water) {
+            return blankBitmap; // Not water
+        }
+
+        boolean leftIsWater = isWater(map.getTile(x - 1, y));
+        boolean topIsWater = isWater(map.getTile(x, y - 1));
+        boolean rightIsWater = isWater(map.getTile(x + 1, y));
+        boolean bottomIsWater = isWater(map.getTile(x, y + 1));
+
+        int waterCode = getWaterCode(leftIsWater, topIsWater, rightIsWater, bottomIsWater);
+        if (waterCode == (ORTHO_SUM)) {
+            // We either have a corner or a center piece
+            return getCornerPiece(map, x, y);
+        }
+
+        return waterTiles[waterCode];
+    }
+
+    private Bitmap getCornerPiece(TileMap map, int x, int y) {
+        if (!isWater(map.getTile(x + 1, y - 1))) {
+            return cornerTiles[UPPER_RIGHT];
+        } else if (!isWater(map.getTile(x + 1, y + 1))) {
+            return cornerTiles[LOWER_RIGHT];
+        } else if (!isWater(map.getTile(x - 1, y - 1))) {
+            return cornerTiles[UPPER_LEFT];
+        } else if (!isWater(map.getTile(x - 1, y + 1))) {
+            return cornerTiles[LOWER_LEFT];
+        } else {
+            return waterTiles[ORTHO_SUM];
+        }
     }
 
     // Generate a unique number from each combination using binary powers
@@ -73,41 +106,10 @@ public class WaterTileHelper {
         return sum;
     }
 
-    public Bitmap getWaterTile(TileMap map, int x, int y) {
-        if (map.getTile(x, y) != TileType.Water) {
-            return blankBitmap; // Not water
-        }
-
-        boolean leftIsWater = isWater(map.getTile(x - 1, y));
-        boolean topIsWater = isWater(map.getTile(x, y - 1));
-        boolean rightIsWater = isWater(map.getTile(x + 1, y));
-        boolean bottomIsWater = isWater(map.getTile(x, y + 1));
-
-        int waterCode = getWaterCode(leftIsWater, topIsWater, rightIsWater, bottomIsWater);
-        if (waterCode == (ORTHO_SUM)) {
-            // We either have a tip or a center piece
-            return getTipPiece(map, x, y);
-        }
-
-        return waterTiles[waterCode];
-    }
-
     // Treat the edge of the map as water
     private boolean isWater(TileType tile) {
-        return tile  == TileType.Water || tile == TileType.Error;
+        return tile == TileType.Water || tile == TileType.Error;
     }
 
-    private Bitmap getTipPiece(TileMap map, int x, int y) {
-        if (!isWater(map.getTile(x + 1, y - 1))) {
-            return tipTiles[UPPER_RIGHT];
-        } else if (!isWater(map.getTile(x + 1, y + 1))) {
-            return tipTiles[LOWER_RIGHT];
-        } else if (!isWater(map.getTile(x - 1, y - 1))) {
-            return tipTiles[UPPER_LEFT];
-        } else if (!isWater(map.getTile(x - 1, y + 1))) {
-            return tipTiles[LOWER_LEFT];
-        } else {
-            return waterTiles[ORTHO_SUM];
-        }
-    }
+
 }

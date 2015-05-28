@@ -18,7 +18,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = SurfaceView.class.getSimpleName();
     private static final long SIXTY_FPS_MS = 1000 / 60;
     private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-    private  static final int TILE_SIZE = 128;
+    private static final int TILE_SIZE = 128;
     private final int TALL_MOUNTAIN_OFFSET = -40;
 
     private boolean isDrawThreadRunning = true;
