@@ -1,6 +1,10 @@
 package com.developworlds.tilemapexample.map;
 
 public class TileMap {
+    public interface MapModifiedListener {
+        public void onMapModified();
+    }
+
     private final int width;
     private final int height;
 
@@ -10,9 +14,12 @@ public class TileMap {
     private final double[] rainMap;
 
     // Decent default values
-    private double waterLevel = 0.35;
-    private double grassLevel = 0.70;
-    private double mountainLevel = 0.8;
+    private double waterLevel = 0.40;
+    private double grassLevel = 0.65;
+    private double mountainLevel = 0.75;
+    private double treeRainLevel = 0.65;
+
+    MapModifiedListener mapModifiedListener;
 
     public TileMap(int width, int height) {
         this.width = width;
@@ -31,7 +38,7 @@ public class TileMap {
         int index = getIndex(x, y);
         TileType type = getTileType(heightMap[index]);
 
-        if (type == TileType.Grass && rainMap[index] > 0.7f) {
+        if (type == TileType.Grass && rainMap[index] > treeRainLevel) {
             return TileType.Forest;
         }
 
@@ -61,7 +68,11 @@ public class TileMap {
             return;
         }
         heightMap[index] = tileHeight;
+
+        notifyMapModified();
     }
+
+
 
     public double getRainLevelAt(int x, int y) {
         return rainMap[getIndex(x, y)];
@@ -74,6 +85,18 @@ public class TileMap {
             return;
         }
         rainMap[index] = rainLevel;
+
+        notifyMapModified();
+    }
+
+    public void setMapModifiedListener(MapModifiedListener mapModifiedListener) {
+        this.mapModifiedListener = mapModifiedListener;
+    }
+
+    private void notifyMapModified() {
+        if(mapModifiedListener != null) {
+            mapModifiedListener.onMapModified();
+        }
     }
 
     private int getIndex(int x, int y) {
@@ -110,5 +133,14 @@ public class TileMap {
 
     public void setMountainLevel(double mountainLevel) {
         this.mountainLevel = mountainLevel;
+    }
+
+
+    public double getTreeRainLevel() {
+        return treeRainLevel;
+    }
+
+    public void setTreeRainLevel(double treeRainLevel) {
+        this.treeRainLevel = treeRainLevel;
     }
 }

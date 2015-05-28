@@ -26,16 +26,22 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        map = new TileMap(MAP_SIZE, MAP_SIZE);
+        if (map == null) {
+            map = new TileMap(MAP_SIZE, MAP_SIZE);
+            executor.execute(createMap);
+        }
 
         mapView = (MapView) findViewById(R.id.map_image);
         mapView.setMap(map);
-
-        executor.execute(createMap);
     }
 
     private final Runnable createMap = new Runnable() {
         public void run() {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             MapCreator mapCreator = new MapCreator();
             mapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
         }

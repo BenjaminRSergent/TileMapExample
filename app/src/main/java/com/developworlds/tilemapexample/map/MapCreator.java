@@ -12,9 +12,9 @@ public class MapCreator {
 
     // Decent default values
     private double detailWeight = 0.25;
-    private double baseZoomLevel = 200.0;
-    private double detailZoomLevel = baseZoomLevel / 4.0;
-    private double rainZoomLevel = baseZoomLevel / 2.0;
+    private double baseZoomLevel = 800.0;
+    private double detailZoomDivisor = 2.0;
+    private double rainZoomDivisor = 8.0;
 
     public void generateTileMap(TileMap map, int startX, int startY, int width, int height) {
         createNoiseGenerators();
@@ -42,6 +42,7 @@ public class MapCreator {
     }
 
     private void addDetail(TileMap map, int startX, int startY, int width, int height) {
+        double detailZoomLevel = baseZoomLevel / detailZoomDivisor;
         for (int x = startX; x < startX + width; x++) {
             for (int y = startY; y < startY + height; y++) {
                 double tileHeight = detail.get(x / detailZoomLevel, y / detailZoomLevel);
@@ -52,6 +53,7 @@ public class MapCreator {
     }
 
     private void addRain(TileMap map, int startX, int startY, int width, int height) {
+        double rainZoomLevel = baseZoomLevel / rainZoomDivisor;
         for (int x = startX; x < startX + width; x++) {
             for (int y = startY; y < startY + height; y++) {
                 double rainLevel = rain.get(x / rainZoomLevel, y / rainZoomLevel);
@@ -69,9 +71,9 @@ public class MapCreator {
         // weight.
         detail = createSimplexGenerator(8, 2, -detailWeight, detailWeight);
 
-        // The rain noise generator doesn't need special settings. These parameters
-        // are the most common to use with simplex noise.
-        rain = createSimplexGenerator(8, 2, 0, 1);
+        // We want the forests to have soft edges, so the rain generator uses a low
+        // number of octaves.
+        rain = createSimplexGenerator(4, 2, 0, 1);
     }
 
     private Joise createSimplexGenerator(int octaves, int frequency, double min, double max) {
@@ -109,19 +111,19 @@ public class MapCreator {
         this.baseZoomLevel = baseZoomLevel;
     }
 
-    public double getDetailZoomLevel() {
-        return detailZoomLevel;
+    public double getDetailZoomDivisor() {
+        return detailZoomDivisor;
     }
 
-    public void setDetailZoomLevel(double detailZoomLevel) {
-        this.detailZoomLevel = detailZoomLevel;
+    public void setDetailZoomDivisor(double detailZoomDivisor) {
+        this.detailZoomDivisor = detailZoomDivisor;
     }
 
-    public double getRainZoomLevel() {
-        return rainZoomLevel;
+    public double getRainZoomDivisor() {
+        return rainZoomDivisor;
     }
 
-    public void setRainZoomLevel(double rainZoomLevel) {
-        this.rainZoomLevel = rainZoomLevel;
+    public void setRainZoomDivisor(double rainZoomDivisor) {
+        this.rainZoomDivisor = rainZoomDivisor;
     }
 }
