@@ -140,13 +140,17 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Tile
             return;
         }
 
-        int xSubTileOffset = (int) -((tilePosition.x - (int) tilePosition.x) * TILE_SIZE);
-        int ySubTileOffset = (int) -((tilePosition.y - (int) tilePosition.y) * TILE_SIZE);
+        // Cache the position in case it changes while drawing.
+        PointF initalTilePosition = new PointF(this.tilePosition.x, this.tilePosition.y);
 
-        for (int x = (int) tilePosition.x - 2; x < tilePosition.x + cachedBitmapCanvas.getWidth() / TILE_SIZE + 2; x++) {
-            for (int y = (int) tilePosition.y - 2; y < tilePosition.y + cachedBitmapCanvas.getHeight() / TILE_SIZE + 2; y++) {
-                int screenX = xSubTileOffset + (int) (x - tilePosition.x) * TILE_SIZE;
-                int screenY = ySubTileOffset + (int) (y - tilePosition.y) * TILE_SIZE;
+        int xSubTileOffset = (int) -((initalTilePosition.x - (int) initalTilePosition.x) * TILE_SIZE);
+        int ySubTileOffset = (int) -((initalTilePosition.y - (int) initalTilePosition.y) * TILE_SIZE);
+
+        Rect dest = new Rect();
+        for (int x = (int) initalTilePosition.x - 2; x < initalTilePosition.x + cachedBitmapCanvas.getWidth() / TILE_SIZE + 2; x++) {
+            for (int y = (int) initalTilePosition.y - 2; y < initalTilePosition.y + cachedBitmapCanvas.getHeight() / TILE_SIZE + 2; y++) {
+                int screenX = xSubTileOffset + (int) (x - initalTilePosition.x) * TILE_SIZE;
+                int screenY = ySubTileOffset + (int) (y - initalTilePosition.y) * TILE_SIZE;
 
                 TileType type = map.getTile(x, y);
                 if (type == TileType.TallMountain) {
@@ -163,7 +167,8 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Tile
 
                 int tileWidth = TILE_SIZE;
                 int tileHeight = bitmap.getHeight() * TILE_SIZE / bitmap.getWidth();
-                cachedBitmapCanvas.drawBitmap(bitmap, null, new Rect(screenX, screenY, screenX + tileWidth, screenY + tileHeight), null);
+                dest.set(screenX, screenY, screenX + tileWidth, screenY + tileHeight);
+                cachedBitmapCanvas.drawBitmap(bitmap, null, dest, null);
             }
         }
 
@@ -188,16 +193,14 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Tile
         if (x == 0 && y == 0) {
             return;
         }
-        synchronized (getHolder()) {
-            tilePosition.x += x;
-            tilePosition.y += y;
+        tilePosition.x += x;
+        tilePosition.y += y;
 
-            tilePosition.x = Math.min(map.getMapWidth() - (getWidth() / TILE_SIZE), tilePosition.x);
-            tilePosition.x = Math.max(0, tilePosition.x);
+        tilePosition.x = Math.min(map.getMapWidth() - (getWidth() / TILE_SIZE), tilePosition.x);
+        tilePosition.x = Math.max(0, tilePosition.x);
 
-            tilePosition.y = Math.min(map.getMapHeight() - (getHeight() / TILE_SIZE), tilePosition.y);
-            tilePosition.y = Math.max(0, tilePosition.y);
-        }
+        tilePosition.y = Math.min(map.getMapHeight() - (getHeight() / TILE_SIZE), tilePosition.y);
+        tilePosition.y = Math.max(0, tilePosition.y);
 
         needToRedraw = true;
     }

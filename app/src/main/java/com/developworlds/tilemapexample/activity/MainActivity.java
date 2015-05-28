@@ -37,11 +37,6 @@ public class MainActivity extends Activity {
 
     private final Runnable createMap = new Runnable() {
         public void run() {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             MapCreator mapCreator = new MapCreator();
             mapCreator.generateTileMap(map, 0, 0, MAP_SIZE, MAP_SIZE);
         }
