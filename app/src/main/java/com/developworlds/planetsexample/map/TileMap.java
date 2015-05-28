@@ -14,14 +14,6 @@ public class TileMap {
         rainMap = new double[width * height];
     }
 
-    public void setTileHeight(int x, int y, double height) {
-        heightMap[getIndex(x, y)] = height;
-    }
-
-    public void setRainLevel(int x, int y, double height) {
-        rainMap[getIndex(x, y)] = height;
-    }
-
     public TileType getTile(int x, int y) {
         if (x < 0 || x > width - 1 ||
                 y < 0 || y > height - 1) {
@@ -39,30 +31,52 @@ public class TileMap {
     }
 
     private static TileType getTileType(double tileHeight) {
-        if (tileHeight < 0.5) {
+        if (tileHeight < 0.4) {
             return TileType.Water;
         } else if (tileHeight < 0.75) {
             return TileType.Grass;
-        } else if (tileHeight < 0.8) {
+        } else if (tileHeight < 0.9) {
             return TileType.LowMountain;
         } else {
             return TileType.TallMoutain;
         }
     }
 
+
+    public double getTileHeightAt(int x, int y) {
+        return heightMap[getIndex(x, y)];
+    }
+
+    public void setTileHeight(int x, int y, double tileHeight) {
+        int index = getIndex(x, y);
+        if (index < 0 || index > width * height) {
+            return;
+        }
+        heightMap[index] = tileHeight;
+    }
+
+    public double getRainLevelAt(int x, int y) {
+        return rainMap[getIndex(x, y)];
+
+    }
+
+    public void setRainLevel(int x, int y, double height) {
+        int index = getIndex(x, y);
+        if (index < 0 || index > width * height) {
+            return;
+        }
+        rainMap[index] = height;
+    }
+
     private int getIndex(int x, int y) {
         return x + y * width;
     }
 
-    public int getWidth() {
+    public int getMapWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public int getMapHeight() {
         return height;
-    }
-
-    public double getTileHeight(int x, int y) {
-        return heightMap[getIndex(x, y)];
     }
 }

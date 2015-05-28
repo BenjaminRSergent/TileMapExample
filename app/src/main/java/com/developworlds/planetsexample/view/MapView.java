@@ -170,10 +170,10 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback {
             tilePosition.x += x;
             tilePosition.y += y;
 
-            tilePosition.x = Math.min(map.getWidth() - (getWidth() / TILE_SIZE), tilePosition.x);
+            tilePosition.x = Math.min(map.getMapWidth() - (getWidth() / TILE_SIZE), tilePosition.x);
             tilePosition.x = Math.max(0, tilePosition.x);
 
-            tilePosition.y = Math.min(map.getHeight() - (getHeight() / TILE_SIZE), tilePosition.y);
+            tilePosition.y = Math.min(map.getMapHeight() - (getHeight() / TILE_SIZE), tilePosition.y);
             tilePosition.y = Math.max(0, tilePosition.y);
         }
     }
