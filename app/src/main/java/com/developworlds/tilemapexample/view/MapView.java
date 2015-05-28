@@ -19,7 +19,7 @@ public class MapView extends SurfaceView implements SurfaceHolder.Callback, Tile
     private static final String TAG = SurfaceView.class.getSimpleName();
     private static final long SIXTY_FPS_MS = 1000 / 60;
     private static final Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-    private static final int TILE_SIZE = 16;
+    private static final int TILE_SIZE = 64;
     // The tall mountain is 10 px higher when the tile size is 32
     private static final int TALL_MOUNTAIN_OFFSET = TILE_SIZE * 10 / 32;
 
