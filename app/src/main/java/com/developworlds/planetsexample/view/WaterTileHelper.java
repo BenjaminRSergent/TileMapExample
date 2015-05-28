@@ -14,7 +14,7 @@ public class WaterTileHelper {
     private static final int TOP = 1 << 2;
     private static final int BOTTOM = 1 << 3;
     private static final int ORTHO_SUM = LEFT + RIGHT + TOP + BOTTOM;
-    private Bitmap[] waterTiles = new Bitmap[ORTHO_SUM];
+    private Bitmap[] waterTiles = new Bitmap[ORTHO_SUM + 1];
 
     private static int UPPER_LEFT = 0;
     private static int UPPER_RIGHT = 1;
@@ -68,7 +68,7 @@ public class WaterTileHelper {
             sum += BOTTOM;
         }
 
-        return sum == 0 ?  sum : sum - 1;
+        return sum;
     }
 
     public Bitmap getWaterTile(TileMap map, int x, int y) {
