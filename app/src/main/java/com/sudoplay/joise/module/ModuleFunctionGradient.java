@@ -56,7 +56,7 @@ public class ModuleFunctionGradient extends SourcedModule {
 
   public static final double DEFAULT_SPACING = 0.01;
 
-  public static enum FunctionGradientAxis {
+  public enum FunctionGradientAxis {
     X_AXIS, Y_AXIS, Z_AXIS, W_AXIS, U_AXIS, V_AXIS
   }
 

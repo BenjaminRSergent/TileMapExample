@@ -201,10 +201,10 @@ public abstract class Module {
     try {
       if (props.isModuleID(name)) {
         Method method = getClass().getMethod(methodName, Module.class);
-        method.invoke(this, new Object[] { map.get(props.get(name)) });
+        method.invoke(this, map.get(props.get(name)));
       } else {
         Method method = getClass().getMethod(methodName, double.class);
-        method.invoke(this, new Object[] { props.getAsDouble(name) });
+        method.invoke(this, props.getAsDouble(name));
       }
     } catch (Exception e) {
       throw new JoiseException(e);
@@ -247,7 +247,7 @@ public abstract class Module {
     try {
       Method method = getClass().getMethod(methodName, c);
       T _enum = Enum.valueOf(c, props.get(name).toString().toUpperCase());
-      method.invoke(this, new Object[] { _enum });
+      method.invoke(this, _enum);
     } catch (Exception e) {
       throw new JoiseException(e);
     }
@@ -281,7 +281,7 @@ public abstract class Module {
 
     try {
       Method method = getClass().getMethod(methodName, long.class);
-      method.invoke(this, new Object[] { props.getAsLong(key) });
+      method.invoke(this, props.getAsLong(key));
     } catch (Exception e) {
       throw new JoiseException(e);
     }
@@ -315,7 +315,7 @@ public abstract class Module {
 
     try {
       Method method = getClass().getMethod(methodName, double.class);
-      method.invoke(this, new Object[] { props.getAsDouble(key) });
+      method.invoke(this, props.getAsDouble(key));
     } catch (Exception e) {
       throw new JoiseException(e);
     }
@@ -349,7 +349,7 @@ public abstract class Module {
 
     try {
       Method method = getClass().getMethod(methodName, boolean.class);
-      method.invoke(this, new Object[] { props.getAsBoolean(key) });
+      method.invoke(this, props.getAsBoolean(key));
     } catch (Exception e) {
       throw new JoiseException(e);
     }

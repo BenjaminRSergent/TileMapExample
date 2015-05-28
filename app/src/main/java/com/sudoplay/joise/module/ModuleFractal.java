@@ -64,7 +64,7 @@ public class ModuleFractal extends SeedableModule {
   public static final double DEFAULT_FREQUENCY = 1.0;
   public static final double DEFAULT_LACUNARITY = 2.0;
 
-  public static enum FractalType {
+  public enum FractalType {
     FBM, RIDGEMULTI, BILLOW, MULTI, HYBRIDMULTI, DECARPENTIERSWISS
   }
 

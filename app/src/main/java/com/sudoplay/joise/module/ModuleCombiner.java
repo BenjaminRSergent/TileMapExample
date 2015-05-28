@@ -54,7 +54,7 @@ import com.sudoplay.joise.ModulePropertyMap;
 
 public class ModuleCombiner extends Module {
 
-  public static enum CombinerType {
+  public enum CombinerType {
     ADD, MULT, MAX, MIN, AVG
   }
 

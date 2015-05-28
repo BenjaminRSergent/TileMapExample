@@ -50,9 +50,9 @@ package com.sudoplay.joise.mapping;
 
 public interface Mapping2DWriter {
 
-  public void write(int x, int y, double value);
+  void write(int x, int y, double value);
   
-  public static final Mapping2DWriter NULL_WRITER = new Mapping2DWriter() {
+  Mapping2DWriter NULL_WRITER = new Mapping2DWriter() {
     @Override
     public void write(int x, int y, double value) {
       // do nothing
